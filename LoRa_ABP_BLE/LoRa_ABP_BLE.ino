@@ -12,9 +12,6 @@
 #define HIGH_NIBBLE(i) ((i >> 4) & 0x0F)
 #define LOW_NIBBLE(i) (i & 0x0F)
 
-//Use OTAA, set to false to use ABP
-bool OTAA = true;
-
 // ABP
 // USE YOUR OWN KEYS!
 const uint8_t devAddr[4] =
@@ -34,22 +31,10 @@ const uint8_t nwkSKey[16] =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-// OTAA
 // With using the GetHWEUI() function the HWEUI will be used
 static uint8_t DevEUI[8]
 {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-
-
-const uint8_t AppEUI[8] =
-{
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-
-const uint8_t AppKey[16] =
-{
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
 void setup()
@@ -84,17 +69,6 @@ void setup()
 }
 
 void setupLoRa(){
-  if(!OTAA){
-    // ABP
-    setupLoRaABP();
-  } else {
-    //OTAA
-    setupLoRaOTAA();
-  }
-  LoRaBee.setSpreadingFactor(9);
-}
-
-void setupLoRaABP(){  
   if (LoRaBee.initABP(loraSerial, devAddr, appSKey, nwkSKey, true))
   {
     debugSerial.println("Communication to LoRaBEE successful.");
@@ -103,18 +77,7 @@ void setupLoRaABP(){
   {
     debugSerial.println("Communication to LoRaBEE failed!");
   }
-}
-
-void setupLoRaOTAA(){
-  
-  if (LoRaBee.initOTA(loraSerial, DevEUI, AppEUI, AppKey, true))
-  {
-    debugSerial.println("Network connection successful.");
-  }
-  else
-  {
-    debugSerial.println("Network connection failed!");
-  }
+  LoRaBee.setSpreadingFactor(9);
 }
 
 void loop()
