@@ -82,11 +82,10 @@ void setupLoRa(){
 
 void loop()
 {
-   String reading = getTemperature();
-   debugSerial.println(reading);
+  String reading = getTemperature();
+  debugSerial.println(reading);
 
-    switch (LoRaBee.send(1, (uint8_t*)reading.c_str(), reading.length()))
-    {
+  switch (LoRaBee.send(1, (uint8_t*)reading.c_str(), reading.length())) {
     case NoError:
       debugSerial.println("Successful transmission.");
       break;
