@@ -1,3 +1,8 @@
+/*  Based on the 'Send Temperature with LoRaWAN' example
+ *  from http://support.sodaq.com/sodaq-one/lorawan/
+ *  Modifications by Gabriel Notman
+ */
+
 #include <Sodaq_RN2483.h>
 
 #define debugSerial SerialUSB
