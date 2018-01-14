@@ -3,7 +3,7 @@
  *  Modifications by Gabriel Notman
  */
 
-#include <Sodaq_RN2483.h>
+#include "Sodaq_RN2483.h"
 
 #define debugSerial SerialUSB
 #define loraSerial Serial2

@@ -21,7 +21,7 @@
 #include "Sodaq_RN2483.h"
 #include "Sodaq_RN2483_internal.h"
 #include "Utils.h"
-#include <Sodaq_wdt.h>
+#include "Sodaq_wdt.h"
 
 //#define DEBUG
 
