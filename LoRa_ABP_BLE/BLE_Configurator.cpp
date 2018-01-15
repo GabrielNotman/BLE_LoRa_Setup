@@ -1,5 +1,6 @@
 #include "BLE_Configurator.h"
 #include "RN487x_BLE.h"
+#include "Shared.h"
 
 #define DEVICE_PREFIX "SODAQ_EXPLORER"
 #define NEW_LINE "\r\n"
@@ -24,7 +25,7 @@ void setRgbColor(uint8_t red, uint8_t green, uint8_t blue)
   analogWrite(LED_BLUE, blue) ;
 }
 
-void setupBLE(Uart& bleSerial, Stream& debugSerial)
+void setupBLE()
 {
   initLed();
   setRgbColor(255, 255, 255);

@@ -5,11 +5,8 @@
 
 #include "Sodaq_RN2483.h"
 #include "Utils.h"
+#include "Shared.h"
 #include "BLE_Configurator.h"
-
-#define debugSerial SerialUSB
-#define loraSerial Serial2
-#define bleSerial Serial1
 
 void setup()
 {
@@ -41,7 +38,7 @@ void setup()
   printHex(AppKey, sizeof(AppKey));
   debugSerial.println();
 
-  setupBLE(bleSerial, debugSerial);
+  setupBLE();
  
   setupLoRa();
 }
