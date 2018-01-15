@@ -4,13 +4,10 @@
  */
 
 #include "Sodaq_RN2483.h"
+#include "Utils.h"
 
 #define debugSerial SerialUSB
 #define loraSerial Serial2
-
-#define NIBBLE_TO_HEX_CHAR(i) ((i <= 9) ? ('0' + i) : ('A' - 10 + i))
-#define HIGH_NIBBLE(i) ((i >> 4) & 0x0F)
-#define LOW_NIBBLE(i) (i & 0x0F)
 
 // OTAA
 static uint8_t DevEUI[8]
