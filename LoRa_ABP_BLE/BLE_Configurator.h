@@ -1,6 +1,7 @@
 #ifndef _BLE_CONFIGURATOR_H
 #define _BLE_CONFIGURATOR_H
 
+#include <Arduino.h>
 #include <stdint.h>
 
 static uint8_t DevEUI[8]
@@ -22,7 +23,7 @@ static uint8_t AppKey[16] =
   //0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-void setupBLE();
+void setupBLE(Uart& bleSerial, Stream& debugSerial);
 bool configOverBLE();
 
 #endif

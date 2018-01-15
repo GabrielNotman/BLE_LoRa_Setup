@@ -9,6 +9,7 @@
 
 #define debugSerial SerialUSB
 #define loraSerial Serial2
+#define bleSerial Serial1
 
 void setup()
 {
@@ -39,6 +40,8 @@ void setup()
   debugSerial.print("LoRa AppKey: ");
   printHex(AppKey, sizeof(AppKey));
   debugSerial.println();
+
+  setupBLE(bleSerial, debugSerial);
  
   setupLoRa();
 }
