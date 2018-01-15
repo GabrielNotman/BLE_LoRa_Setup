@@ -95,7 +95,6 @@ void setup()
     while(1) ;
   }
 
-  rn487xBle.factoryReset();
   rn487xBle.enterCommandMode();
   rn487xBle.setSerializedName("Gorilla") ;
   rn487xBle.setDefaultServices(DEVICE_INFO_SERVICE | UART_TRANSP_SERVICE);
