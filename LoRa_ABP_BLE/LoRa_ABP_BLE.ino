@@ -34,13 +34,11 @@ static uint8_t AppKey[16] =
 
 void setup()
 {
-  delay(1000);
-  
   while ((!debugSerial) && (millis() < 10000)){
     // Wait 10 seconds for debugSerial to open
   }
 
-  debugSerial.println("Start");
+  debugSerial.println("Starting...");
 
   // Start streams
   debugSerial.begin(57600);
@@ -48,18 +46,22 @@ void setup()
 
   LoRaBee.setDiag(debugSerial); // to use debug remove //DEBUG inside library
   LoRaBee.init(loraSerial, LORA_RESET);
-
-  //Use the Hardware EUI
-  //getHWEUI();
-
-  // Print the Hardware EUI
-  debugSerial.print("LoRa HWEUI: ");
-  for (uint8_t i = 0; i < sizeof(DevEUI); i++) {
-    debugSerial.print((char)NIBBLE_TO_HEX_CHAR(HIGH_NIBBLE(DevEUI[i])));
-    debugSerial.print((char)NIBBLE_TO_HEX_CHAR(LOW_NIBBLE(DevEUI[i])));
-  }
-  debugSerial.println();  
   
+  // Print the Dev EUI
+  debugSerial.print("LoRa DevEUI: ");
+  printHex(DevEUI, sizeof(DevEUI));
+  debugSerial.println();
+
+  // Print the App EUI
+  debugSerial.print("LoRa AppvEUI: ");
+  printHex(AppEUI, sizeof(AppEUI));
+  debugSerial.println();
+
+  // Print the App Key
+  debugSerial.print("LoRa AppKey: ");
+  printHex(AppKey, sizeof(AppKey));
+  debugSerial.println();
+ 
   setupLoRa();
 }
 
@@ -78,7 +80,13 @@ void setupLoRa(){
 void loop()
 {
   String reading = getTemperature();
-  debugSerial.println(reading);
+
+  // Print the payload
+  debugSerial.print("Packet Payload: ");
+  debugSerial.print(reading + " = ");
+  printHex((uint8_t*)reading.c_str(), reading.length());
+  debugSerial.println();
+  
 
   switch (LoRaBee.send(1, (uint8_t*)reading.c_str(), reading.length())) {
     case NoError:
@@ -130,11 +138,11 @@ String getTemperature()
   return String(temp);
 }
 
-/**
-* Gets and stores the LoRa module's HWEUI/
-* Unused
-*/
-static void getHWEUI()
+void printHex(uint8_t* buff, uint8_t len)
 {
-  uint8_t len = LoRaBee.getHWEUI(DevEUI, sizeof(DevEUI));
+    for (uint8_t i = 0; i < len; i++) {
+      debugSerial.print((char)NIBBLE_TO_HEX_CHAR(HIGH_NIBBLE(buff[i])));
+      debugSerial.print((char)NIBBLE_TO_HEX_CHAR(LOW_NIBBLE(buff[i])));
+    }
 }
+
