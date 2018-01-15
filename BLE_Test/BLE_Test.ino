@@ -25,7 +25,7 @@
 */
 
 #include <Arduino.h>
-#include <RN487x_BLE.h>
+#include "RN487x_BLE.h"
 
 #define debugSerial SerialUSB
 #if defined(ARDUINO_SODAQ_EXPLORER)
