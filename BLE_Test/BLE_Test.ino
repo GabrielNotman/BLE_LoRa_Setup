@@ -79,7 +79,7 @@ void setup()
 
   initLed() ;
 
-  //rn487xBle.setDiag(debugSerial) ;
+  rn487xBle.setDiag(debugSerial) ;
   rn487xBle.hwInit() ;
   bleSerial.begin(rn487xBle.getDefaultBaudRate()) ;
   rn487xBle.initBleStream(&bleSerial) ;
@@ -94,20 +94,24 @@ void setup()
     debugSerial.println("BLE Init. procedure failed!") ;
     while(1) ;
   }
+
   rn487xBle.factoryReset();
-  rn487xBle.enterCommandMode() ;
-  //rn487xBle.setConPower(0);
-  //rn487xBle.stopAdvertising() ;
-  //rn487xBle.setAdvPower(0) ;
+  rn487xBle.enterCommandMode();
   rn487xBle.setSerializedName("Gorilla") ;
-  //rn487xBle.clearAllServices() ;
   rn487xBle.setDefaultServices(DEVICE_INFO_SERVICE | UART_TRANSP_SERVICE);
-  rn487xBle.setServiceUUID("6E400001B5A3F393E0A9E50E24DCCA9E");
-  rn487xBle.setCharactUUID("6E400002B5A3F393E0A9E50E24DCCA9E", WRITE_PROPERTY, 20) ;
-  rn487xBle.setCharactUUID("6E400003B5A3F393E0A9E50E24DCCA9E", READ_PROPERTY | NOTIFY_PROPERTY, 20) ;
   rn487xBle.reboot();
+  
+  //Standard Nordic, does not actually open a stream
+  //rn487xBle.setServiceUUID("6E400001B5A3F393E0A9E50E24DCCA9E");
+  //rn487xBle.setCharactUUID("6E400002B5A3F393E0A9E50E24DCCA9E", WRITE_PROPERTY, 20) ;
+  //rn487xBle.setCharactUUID("6E400003B5A3F393E0A9E50E24DCCA9E", READ_PROPERTY | NOTIFY_PROPERTY, 20) ;
+
+  //Default not actually required to be set
   //rn487xBle.enterCommandMode();
-  rn487xBle.enterDataMode();
+  //rn487xBle.setServiceUUID("49535343FE7D4AE58FA99FAFD205E455");
+  //rn487xBle.setCharactUUID("495353431E4D4BD9BA6123C647249616", WRITE_PROPERTY, 20);
+  //rn487xBle.setCharactUUID("49535343884143F4A8D4ECBE34729BB3", READ_PROPERTY | NOTIFY_PROPERTY, 20);
+  //rn487xBle.reboot();
 }
 
 void loop()
