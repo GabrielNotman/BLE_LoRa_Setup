@@ -28,11 +28,7 @@
 #include "RN487x_BLE.h"
 
 #define debugSerial SerialUSB
-#if defined(ARDUINO_SODAQ_EXPLORER)
 #define bleSerial Serial1
-#else
-#define bleSerial Serial
-#endif
 
 #define SERIAL_TIMEOUT  10000
 
@@ -83,45 +79,35 @@ void setup()
 
   initLed() ;
 
-  // Set the optional debug stream
-  rn487xBle.setDiag(debugSerial) ;
-  // Initialize the BLE hardware
+  //rn487xBle.setDiag(debugSerial) ;
   rn487xBle.hwInit() ;
-  // Open the communication pipe with the BLE module
   bleSerial.begin(rn487xBle.getDefaultBaudRate()) ;
-  // Assign the BLE serial port to the BLE library
   rn487xBle.initBleStream(&bleSerial) ;
-  // Finalize the init. process
   if (rn487xBle.swInit())
   {
     setRgbColor(0, 255, 0) ;
-    debugSerial.println("Init. procedure done!") ;
+    debugSerial.println("BLE Init. procedure done!") ;
   }
   else
   {
     setRgbColor(255, 0, 0) ;
-    debugSerial.println("Init. procedure failed!") ;
+    debugSerial.println("BLE Init. procedure failed!") ;
     while(1) ;
   }
-  
-  // >> Configuring the BLE
-  // First enter in command/configuration mode
+  rn487xBle.factoryReset();
   rn487xBle.enterCommandMode() ;
-  // Remove GATT services
-  rn487xBle.setDefaultServices(NO_SERVICE) ;
-  // Set passive scan and does not filter out duplicate scan results
-  rn487xBle.setSupportedFeatures(PASSIVE_SCAN_BMP | NO_DUPLICATE_SCAN_BMP) ;
-  // Take into account the settings by issuing a reboot
-  rn487xBle.reboot() ;
-  rn487xBle.enterCommandMode() ;
-  // Halt advertisement
-  rn487xBle.stopAdvertising() ;
-
-  // Start scanning
-  rn487xBle.startScanning() ;
-
-  debugSerial.println("Starter Kit as an Observer without filtering the duplicate scan results") ;
-  debugSerial.println("=======================================================================") ;
+  //rn487xBle.setConPower(0);
+  //rn487xBle.stopAdvertising() ;
+  //rn487xBle.setAdvPower(0) ;
+  rn487xBle.setSerializedName("Gorilla") ;
+  //rn487xBle.clearAllServices() ;
+  rn487xBle.setDefaultServices(DEVICE_INFO_SERVICE | UART_TRANSP_SERVICE);
+  rn487xBle.setServiceUUID("6E400001B5A3F393E0A9E50E24DCCA9E");
+  rn487xBle.setCharactUUID("6E400002B5A3F393E0A9E50E24DCCA9E", WRITE_PROPERTY, 20) ;
+  rn487xBle.setCharactUUID("6E400003B5A3F393E0A9E50E24DCCA9E", READ_PROPERTY | NOTIFY_PROPERTY, 20) ;
+  rn487xBle.reboot();
+  //rn487xBle.enterCommandMode();
+  rn487xBle.enterDataMode();
 }
 
 void loop()
@@ -129,6 +115,6 @@ void loop()
   // Display the result of the scanning
   if (bleSerial.available())
   {
-    debugSerial.print((char)bleSerial.read()) ;
+    debugSerial.write((char)bleSerial.read());
   }
 }
