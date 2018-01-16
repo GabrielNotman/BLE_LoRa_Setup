@@ -1,6 +1,7 @@
 #include "BLE_Configurator.h"
 #include "RN487x_BLE.h"
 #include "Shared.h"
+#include "Utils.h"
 
 #define DEVICE_PREFIX "SODAQ_EXPLORER"
 #define STATUS_PREFIX "[STATUS MSG]: "
@@ -8,10 +9,11 @@
 #define RESP_PREFIX "[RESPNSE]: "
 
 #define CMD_STATUS "AT"
-#define CMD_KEYS "CMD1"
+#define CMD_KEYS "CMD1="
 
 #define NEW_LINE "\r\n"
 #define CMD_SEP '='
+#define KEY_SEP '|'
 #define STATUS_SEP '%'
 
 #define SUCCESS_RESP "OK"
@@ -129,7 +131,71 @@ void readLn()
 
 bool processKeyCMD(String command)
 {
-  return true;
+  //The format is (AppEUI|DevEUI|AppKey).
+  //0090D31000000002|0090D32000000004|4613F695AF37D2C4691786C59A78EC94
+
+  bool fail = false;
+  uint8_t start = 0;
+  uint8_t end = 0;
+  
+  //AppEUI
+  if (!fail) {
+    start = command.indexOf(CMD_SEP) + 1;
+    end = command.indexOf(KEY_SEP);
+
+    //debugSerial.println(String(start) + " " + String(end) + " " + String(end - start) + " " + String(sizeof(AppEUI)*2));
+    
+    if ((end - start) == (sizeof(AppEUI)*2)) {
+      for (uint8_t i = 0; i < sizeof(AppEUI); i++) {
+        uint8_t index = start+i*2;
+        AppEUI[i] = HEX_PAIR_TO_BYTE(command[index],command[index + 1]);
+      }
+    }
+    else {
+      fail = true;
+    }    
+  }
+
+  //DevEUI
+  if (!fail) {
+    start = end + 1;
+    end = command.indexOf(KEY_SEP, start);
+
+    //debugSerial.println(String(start) + " " + String(end) + " " + String(end - start) + " " + String(sizeof(DevEUI)*2));
+    
+    if ((end - start) == (sizeof(DevEUI)*2)) {
+      for (uint8_t i = 0; i < sizeof(DevEUI); i++) {
+        uint8_t index = start+i*2;
+        DevEUI[i] = HEX_PAIR_TO_BYTE(command[index],command[index + 1]);
+      }
+    }
+    else {
+      fail = true;
+    }
+  }
+
+  //AppKey
+  if (!fail) {
+    start = end + 1;
+    end = command.length();
+
+    //debugSerial.println(String(start) + " " + String(end) + " " + String(end - start) + " " + String(sizeof(AppKey)*2));
+    
+    if ((end - start) == (sizeof(AppKey)*2)) {
+      for (uint8_t i = 0; i < sizeof(AppKey); i++) {
+        uint8_t index = start+i*2;
+        AppKey[i] = HEX_PAIR_TO_BYTE(command[index],command[index + 1]);
+      }
+
+      //If we get here, all the keys have been configured
+      configured = true;
+    }
+    else {
+      fail = true;
+    }
+  }
+
+  return !fail;
 }
 
 void processLn()
