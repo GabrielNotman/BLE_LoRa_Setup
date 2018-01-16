@@ -28,8 +28,13 @@ void setup()
 
   // Get configuration over BLE
   setupBLE();
-  configOverBLE();
+  if (!configOverBLE()) {
+    debugSerial.println("BLE Configuration. Failed");
+    while(1);
+  }
 
+  debugSerial.println("BLE Configuration. Success");
+    
   //Print configured Keys
   printKeys("Configured Keys:");
  
