@@ -57,12 +57,12 @@ void setupBLE()
   if (rn487xBle.swInit())
   {
     setRgbColor(0, 0, 255) ;
-    debugSerial.println("BLE Init. procedure done!") ;
+    debugSerial.println("BLE Init. Sucess!") ;
   }
   else
   {
     setRgbColor(255, 255, 0) ;
-    debugSerial.println("BLE Init. procedure failed!") ;
+    debugSerial.println("BLE Init. Failed!") ;
     while(1) ;
   }
 

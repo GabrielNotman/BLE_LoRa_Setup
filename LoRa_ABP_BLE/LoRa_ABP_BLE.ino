@@ -112,6 +112,7 @@ String getTemperature()
 void printKeys(String header)
 {
   // Print the header
+  debugSerial.println("--------------------------------");
   debugSerial.println(header);
   
   // Print the App EUI
@@ -128,6 +129,7 @@ void printKeys(String header)
   debugSerial.print("LoRa AppKey: ");
   printHex(AppKey, sizeof(AppKey));
   debugSerial.println();
+  debugSerial.println("--------------------------------");
 }
 
 void printHex(uint8_t* buff, uint8_t len)
