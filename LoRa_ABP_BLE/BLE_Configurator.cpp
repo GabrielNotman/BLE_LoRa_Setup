@@ -3,9 +3,20 @@
 #include "Shared.h"
 
 #define DEVICE_PREFIX "SODAQ_EXPLORER"
+#define STATUS_PREFIX "[STATUS MSG]: "
+#define DATA_PREFIX "[DATA_MSG]: "
 #define NEW_LINE "\r\n"
-#define CMD_SEP "="
-#define STATUS_SEP "%"
+#define CMD_SEP '='
+#define STATUS_SEP '%'
+
+#define CONFIG_TIMEOUT 60000
+#define LINE_TIMEOUT 500
+
+#define BUFF_LEN 128
+
+uint8_t buff[BUFF_LEN];
+uint8_t buffLen = 0;
+bool configured = false;
 
 void initLed()
 {
@@ -49,20 +60,82 @@ void setupBLE()
   rn487xBle.setSerializedName(DEVICE_PREFIX) ;
   rn487xBle.setDefaultServices(DEVICE_INFO_SERVICE | UART_TRANSP_SERVICE);
   rn487xBle.reboot();
+}
 
-  while(1) {
-    while (bleSerial.available()) {
-      debugSerial.write((char)bleSerial.read());
-    }
+void readLn()
+{
+  buffLen = 0;
+  bool statusDetected = false;
+  
+  //Timeout function
+  int32_t timeOut = millis() + LINE_TIMEOUT;
+  while (millis() < timeOut) {
+    if (bleSerial.available()) {
+      char c = bleSerial.read();
 
-    while (debugSerial.available()) {
-      bleSerial.write((char)debugSerial.read());
+      //Write character to debug or buffer depending on status state
+      if (statusDetected) {
+        debugSerial.print(c);
+      }
+      //Skip if about to enter status state
+      else if ((buffLen < (BUFF_LEN - 1)) && (c != STATUS_SEP)) {
+        buff[buffLen] = c;
+        buffLen++;  
+      }
+
+      //If status terminator is detected
+      if (c == STATUS_SEP) {
+        //Invert status message state
+        statusDetected = !statusDetected;
+
+        //Handle each transition separately
+        if (statusDetected) {
+          debugSerial.print(STATUS_PREFIX);
+          debugSerial.print(c);
+        }
+        else {
+          debugSerial.println();
+        }
+      }
+
+      
+      
+      //Reset Timeout if a character is seen
+      int32_t timeOut = millis() + LINE_TIMEOUT;
     }
+  }
+
+  //Todo
+  //Add line ending detection
+  
+  //Add terminating 0
+  buff[buffLen] = 0;
+}
+
+void processLn()
+{
+  
+  if (buffLen > 0) {
+    debugSerial.print(DATA_PREFIX);
+    debugSerial.println((char*)buff);
   }
 }
 
 bool configOverBLE()
 {
-  return false; 
+  int32_t timeOut = millis() + CONFIG_TIMEOUT;
+  
+  while (!configured && (millis() < timeOut)) {
+    readLn();
+    processLn();
+  }
+
+  if (configured) {
+    setRgbColor(0, 0, 255) ;  
+  }
+  else {
+    setRgbColor(255, 0, 0) ;
+  }
+  return configured; 
 }
 

@@ -39,6 +39,7 @@ void setup()
   debugSerial.println();
 
   setupBLE();
+  configOverBLE();
  
   setupLoRa();
 }
