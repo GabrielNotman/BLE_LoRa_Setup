@@ -66,10 +66,11 @@ void readLn()
 {
   buffLen = 0;
   bool statusDetected = false;
+  bool seenCR = false;
   
   //Timeout function
   int32_t timeOut = millis() + LINE_TIMEOUT;
-  while (millis() < timeOut) {
+  while ((millis() < timeOut) && (!seenCR)) {
     if (bleSerial.available()) {
       char c = bleSerial.read();
 
@@ -79,8 +80,19 @@ void readLn()
       }
       //Skip if about to enter status state
       else if ((buffLen < (BUFF_LEN - 1)) && (c != STATUS_SEP)) {
-        buff[buffLen] = c;
-        buffLen++;  
+        //Check for CR        
+        seenCR = c == '\r';
+        if (seenCR) {
+          delay(10);
+          //Check for LF
+          if (bleSerial.peek() == '\n') {
+            bleSerial.read();
+          }
+        }
+        else {
+          buff[buffLen] = c;
+          buffLen++;
+        }
       }
 
       //If status terminator is detected
@@ -97,16 +109,11 @@ void readLn()
           debugSerial.println();
         }
       }
-
-      
       
       //Reset Timeout if a character is seen
       int32_t timeOut = millis() + LINE_TIMEOUT;
     }
   }
-
-  //Todo
-  //Add line ending detection
   
   //Add terminating 0
   buff[buffLen] = 0;
