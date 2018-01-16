@@ -10,7 +10,7 @@
 #define STATUS_SEP '%'
 
 #define CONFIG_TIMEOUT 60000
-#define LINE_TIMEOUT 500
+#define LINE_TIMEOUT 200
 
 #define BUFF_LEN 128
 
