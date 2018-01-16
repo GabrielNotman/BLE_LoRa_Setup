@@ -116,13 +116,8 @@ void setup()
 void loop()
 {
   // Display the result of the scanning
-  while (bleSerial.available())
+  if (bleSerial.available())
   {
     debugSerial.write((char)bleSerial.read());
-  }
-
-  while (debugSerial.available())
-  {
-    bleSerial.write((char)debugSerial.read());
   }
 }
