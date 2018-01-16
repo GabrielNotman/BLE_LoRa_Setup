@@ -176,6 +176,7 @@ bool configOverBLE()
     processLn();
   }
 
+  //Shutdown BLE module
   rn487xBle.hwReset();
 
   if (configured) {
