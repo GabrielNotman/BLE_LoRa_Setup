@@ -38,6 +38,7 @@ void setup()
   printHex(AppKey, sizeof(AppKey));
   debugSerial.println();
 
+  // Get configuration over BLE
   setupBLE();
   configOverBLE();
  

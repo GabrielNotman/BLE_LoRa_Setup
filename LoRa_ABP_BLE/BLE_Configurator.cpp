@@ -176,12 +176,15 @@ bool configOverBLE()
     processLn();
   }
 
+  rn487xBle.hwReset();
+
   if (configured) {
     setRgbColor(0, 0, 255) ;  
   }
   else {
     setRgbColor(255, 0, 0) ;
   }
+  
   return configured; 
 }
 
