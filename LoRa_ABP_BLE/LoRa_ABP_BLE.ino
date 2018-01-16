@@ -23,24 +23,15 @@ void setup()
   LoRaBee.setDiag(debugSerial); // to use debug remove //DEBUG inside library
   LoRaBee.init(loraSerial, LORA_RESET);
   
-  // Print the Dev EUI
-  debugSerial.print("LoRa DevEUI: ");
-  printHex(DevEUI, sizeof(DevEUI));
-  debugSerial.println();
-
-  // Print the App EUI
-  debugSerial.print("LoRa AppvEUI: ");
-  printHex(AppEUI, sizeof(AppEUI));
-  debugSerial.println();
-
-  // Print the App Key
-  debugSerial.print("LoRa AppKey: ");
-  printHex(AppKey, sizeof(AppKey));
-  debugSerial.println();
+  //Print Original Keys
+  printKeys("Original Keys:");
 
   // Get configuration over BLE
   setupBLE();
   configOverBLE();
+
+  //Print configured Keys
+  printKeys("Configured Keys:");
  
   setupLoRa();
 }
@@ -116,6 +107,27 @@ String getTemperature()
   float temp = (mVolts - 500.0) / 10.0;
   
   return String(temp);
+}
+
+void printKeys(String header)
+{
+  // Print the header
+  debugSerial.println(header);
+  
+  // Print the App EUI
+  debugSerial.print("LoRa AppvEUI: ");
+  printHex(AppEUI, sizeof(AppEUI));
+  debugSerial.println();
+  
+  // Print the Dev EUI
+  debugSerial.print("LoRa DevEUI: ");
+  printHex(DevEUI, sizeof(DevEUI));
+  debugSerial.println();
+
+  // Print the App Key
+  debugSerial.print("LoRa AppKey: ");
+  printHex(AppKey, sizeof(AppKey));
+  debugSerial.println();
 }
 
 void printHex(uint8_t* buff, uint8_t len)
