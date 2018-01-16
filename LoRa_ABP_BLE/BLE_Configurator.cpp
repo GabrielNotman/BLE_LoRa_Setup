@@ -123,6 +123,9 @@ void processLn()
 
 bool configOverBLE()
 {
+  //Clear the reboot character 0x0A
+  bleSerial.read();
+  
   int32_t timeOut = millis() + CONFIG_TIMEOUT;
   
   while (!configured && (millis() < timeOut)) {
