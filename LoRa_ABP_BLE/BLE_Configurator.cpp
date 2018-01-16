@@ -5,12 +5,20 @@
 #define DEVICE_PREFIX "SODAQ_EXPLORER"
 #define STATUS_PREFIX "[STATUS MSG]: "
 #define DATA_PREFIX "[DATA_MSG]: "
+#define RESP_PREFIX "[RESPNSE]: "
+
+#define CMD_STATUS "AT"
+#define CMD_KEYS "CMD1"
+
 #define NEW_LINE "\r\n"
 #define CMD_SEP '='
 #define STATUS_SEP '%'
 
+#define SUCCESS_RESP "OK"
+#define FAIL_RESP "ERROR"
+
 #define CONFIG_TIMEOUT 60000
-#define LINE_TIMEOUT 200
+#define LINE_TIMEOUT 1000
 
 #define BUFF_LEN 128
 
@@ -119,12 +127,40 @@ void readLn()
   buff[buffLen] = 0;
 }
 
+bool processKeyCMD(String command)
+{
+  return true;
+}
+
 void processLn()
 {
-  
   if (buffLen > 0) {
+    String command((char*)buff);
     debugSerial.print(DATA_PREFIX);
-    debugSerial.println((char*)buff);
+    debugSerial.println(command);
+
+    String response = FAIL_RESP;
+
+    //Messy hack for now, just specific command comparisons
+    
+    //AT
+    if (command.equals(CMD_STATUS)) {
+      response = SUCCESS_RESP;
+    }
+
+    //CMD1
+    if (command.startsWith(CMD_KEYS)) {
+      
+      if (processKeyCMD(command)) {
+        response = SUCCESS_RESP;
+      }
+    }
+
+    bleSerial.print(response);
+    bleSerial.print(NEW_LINE);
+
+    debugSerial.print(RESP_PREFIX);
+    debugSerial.println(response);
   }
 }
 
