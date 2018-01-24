@@ -14,11 +14,11 @@ void setup()
     // Wait 10 seconds for debugSerial to open
   }
 
-  debugSerial.println("Starting...");
-
   // Start streams
   debugSerial.begin(57600);
   loraSerial.begin(LoRaBee.getDefaultBaudRate());
+
+  debugSerial.println("Starting...");
 
   LoRaBee.setDiag(debugSerial); // to use debug remove //DEBUG inside library
   LoRaBee.init(loraSerial, LORA_RESET);
