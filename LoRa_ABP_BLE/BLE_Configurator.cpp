@@ -6,7 +6,7 @@
 #define DEVICE_PREFIX "SODAQ_EXPLORER"
 #define STATUS_PREFIX "[STATUS MSG]: "
 #define DATA_PREFIX "[DATA_MSG]: "
-#define RESP_PREFIX "[RESPNSE]: "
+#define RESP_PREFIX "[RESPONSE]: "
 
 #define CMD_STATUS "AT"
 #define CMD_KEYS "CMD1="
