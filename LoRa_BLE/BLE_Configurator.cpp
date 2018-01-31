@@ -21,6 +21,7 @@
 
 #define CONFIG_TIMEOUT 120000
 #define LINE_TIMEOUT 1000
+#define CLOSE_DELAY 2000
 
 #define BUFF_LEN 128
 
@@ -241,6 +242,9 @@ bool configOverBLE()
     readLn();
     processLn();
   }
+
+  //Delay to ensure any responses are transmitted
+  delay(CLOSE_DELAY);
 
   //Shutdown BLE module
   rn487xBle.hwReset();
