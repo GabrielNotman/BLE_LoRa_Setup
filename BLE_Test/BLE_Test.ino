@@ -96,9 +96,15 @@ void setup()
   }
 
   rn487xBle.enterCommandMode();
-  rn487xBle.setSerializedName("Gorilla") ;
+  rn487xBle.retrieveBtAddress();
+  rn487xBle.setSerializedName("Explorer") ;
   rn487xBle.setDefaultServices(DEVICE_INFO_SERVICE | UART_TRANSP_SERVICE);
   rn487xBle.reboot();
+
+  debugSerial.print("Your Device's Name: ");
+  debugSerial.print(rn487xBle.getDeviceName());
+  debugSerial.print("-");
+  debugSerial.println(&rn487xBle.getBtAddress()[8]);
   
   //Standard Nordic, does not actually open a stream
   //rn487xBle.setServiceUUID("6E400001B5A3F393E0A9E50E24DCCA9E");
