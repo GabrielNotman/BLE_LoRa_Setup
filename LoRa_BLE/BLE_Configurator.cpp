@@ -68,9 +68,15 @@ void setupBLE()
   }
 
   rn487xBle.enterCommandMode();
+  rn487xBle.retrieveBtAddress();
   rn487xBle.setSerializedName(DEVICE_PREFIX) ;
   rn487xBle.setDefaultServices(DEVICE_INFO_SERVICE | UART_TRANSP_SERVICE);
   rn487xBle.reboot();
+
+  debugSerial.print("Your Device's Name: ");
+  debugSerial.print(rn487xBle.getDeviceName());
+  debugSerial.print("-");
+  debugSerial.println(&rn487xBle.getBtAddress()[8]);
 }
 
 void readLn()
